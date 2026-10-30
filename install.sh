@@ -6,6 +6,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 REPO_URL="$(git remote get-url origin 2>/dev/null || true)"
+# 本机是 SSH 地址时转为 https(公开仓库免认证克隆,新机器无需配 key)
+REPO_URL="${REPO_URL/git@github.com:/https://github.com/}"
 
 echo "== [1/7] 系统依赖(需要 sudo;无 sudo 时跳过,只要 git/curl/tar 存在即可)"
 if command -v sudo >/dev/null 2>&1; then
