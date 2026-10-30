@@ -91,6 +91,24 @@ if grep -qi microsoft /proc/version 2>/dev/null && ! command -v win32yank.exe >/
     unzip -o /tmp/win32yank.zip -d ~/.local/bin win32yank.exe && \
     chmod +x ~/.local/bin/win32yank.exe && rm -f /tmp/win32yank.zip
 fi
+# Nerd 字体(仅 WSL:装入 Windows 用户字体库,终端图标必需;本仓库自带字体文件)
+if grep -qi microsoft /proc/version 2>/dev/null && [ -d fonts ] && [ -d /mnt/c ]; then
+  WINUSER=$(cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')
+  FONTDIR="/mnt/c/Users/$WINUSER/AppData/Local/Microsoft/Windows/Fonts"
+  if [ -n "$WINUSER" ] && [ -d "/mnt/c/Users/$WINUSER" ]; then
+    mkdir -p "$FONTDIR"
+    for f in fonts/JetBrainsMonoNerdFont-*.ttf; do
+      [ -f "$f" ] || continue
+      cp -f "$f" "$FONTDIR/"
+      style=$(basename "$f" .ttf | sed 's/JetBrainsMonoNerdFont-//')
+      /mnt/c/Windows/System32/reg.exe add "HKCU\Software\Microsoft\Windows NT\CurrentVersion\Fonts" \
+        /v "JetBrainsMono Nerd Font $style (TrueType)" /t REG_SZ \
+        /d "C:\\Users\\$WINUSER\\AppData\\Local\\Microsoft\\Windows\\Fonts\\$(basename "$f")" \
+        /f >/dev/null 2>&1 || true
+    done
+    echo "  字体已装入 Windows(重启终端软件后选 JetBrainsMono Nerd Font)"
+  fi
+fi
 
 echo "== [7/7] 完成"
 echo "  运行 nvim,首次启动自动安装全部插件(受 lazy-lock.json 锁定,版本与本机一致)"
