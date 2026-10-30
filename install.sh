@@ -66,7 +66,7 @@ fi
 
 echo "== [5/7] 引导 lazy.nvim(镜像/SSH 通道已在上一步配好,clone 会自动走)"
 [ -d ~/.local/share/nvim/lazy/lazy.nvim ] || \
-  git clone -q --filter=blob:none https://github.com/folke/lazy.nvim ~/.local/share/nvim/lazy/lazy.nvim
+  git clone -q --filter=blob:none https://github.com/folke/lazy.nvim.git ~/.local/share/nvim/lazy/lazy.nvim
 
 echo "== [6/7] 可选组件与辅助命令"
 # fix-ts:github 断流环境下 parser 下载改走 codeload 通道(幂等)
