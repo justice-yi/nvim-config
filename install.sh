@@ -66,7 +66,19 @@ echo "== [5/7] 引导 lazy.nvim(镜像/SSH 通道已在上一步配好,clone 会
 [ -d ~/.local/share/nvim/lazy/lazy.nvim ] || \
   git clone -q --filter=blob:none https://github.com/folke/lazy.nvim ~/.local/share/nvim/lazy/lazy.nvim
 
-echo "== [6/7] 可选组件"
+echo "== [6/7] 可选组件与辅助命令"
+# fix-ts:github 断流环境下 parser 下载改走 codeload 通道(幂等)
+# 用法:首次 nvim 启动装完插件后,若 :TSInstall 卡住,终端跑 fix-ts 再回 nvim 重试
+cat > ~/.local/bin/fix-ts <<'FIXTS'
+#!/usr/bin/env bash
+f=~/.local/share/nvim/lazy/nvim-treesitter/lua/nvim-treesitter/install.lua
+[ -f "$f" ] || { echo "nvim-treesitter 未安装,先跑一次 nvim 让插件装完"; exit 1; }
+if grep -q codeload "$f"; then echo "已是 codeload 通道,无需处理"; exit 0; fi
+sed -i "s|local target = string.format('%s/archive/%s.tar.gz', url, revision)|local target = url:gsub('github%.com/', 'codeload.github.com/') .. '/tar.gz/' .. revision|" "$f" \
+  && echo "补丁完成。进 nvim 执行 :TSInstall <语言> 即可(如 :TSInstall make xml python)"
+FIXTS
+chmod +x ~/.local/bin/fix-ts
+
 # pyright(Python 跳转/诊断;不需要可删这两行)
 if ! command -v pyright-langserver >/dev/null 2>&1 && command -v npm >/dev/null 2>&1; then
   npm install -g --prefix ~/.local pyright || true
