@@ -109,6 +109,17 @@ if grep -qi microsoft /proc/version 2>/dev/null && [ -d fonts ] && [ -d /mnt/c ]
     echo "  字体已装入 Windows(重启终端软件后选 JetBrainsMono Nerd Font)"
   fi
 fi
+# MobaXterm 等老式 GDI 程序只认「机器级」字体:弹出 UAC 一键机器级安装(点"是";可跳过)
+if grep -qi microsoft /proc/version 2>/dev/null && [ -f fonts/install-machine.ps1 ]; then
+  if ! /mnt/c/Windows/System32/reg.exe query "HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts" 2>/dev/null | tr -d '\r' | grep -q 'C:\\\\Windows\\\\Fonts\\\\JetBrains'; then
+    PS1WIN=$(wslpath -w "$PWD/fonts/install-machine.ps1" 2>/dev/null || true)
+    if [ -n "$PS1WIN" ]; then
+      echo "  [需要 MobaXterm 的话] 请在弹出的 UAC 窗口点[是]安装机器级字体(用 Windows Terminal 可跳过)"
+      powershell.exe -NoProfile -Command "Start-Process powershell -Verb RunAs -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File','$PS1WIN')" || true
+      echo "  机器级安装完成(若点了是),注销重新登录后生效"
+    fi
+  fi
+fi
 
 echo "== [7/7] 完成"
 echo "  运行 nvim,首次启动自动安装全部插件(受 lazy-lock.json 锁定,版本与本机一致)"

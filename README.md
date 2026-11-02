@@ -79,7 +79,8 @@ git clone https://ghfast.top/https://github.com/justice-yi/nvim-config.git /tmp/
 
 | 症状 | 原因与解法 |
 |---|---|
-| 图标变方块 | 终端没选 Nerd 字体;重启终端软件,字体选 JetBrainsMono Nerd Font |
+| 图标变方块 | 终端没在用 Nerd 字体;Windows Terminal 等在设置选 JetBrainsMono Nerd Font;MobaXterm 见下一行 |
+| MobaXterm 字体列表找不到 | 老式 GDI 程序只认机器级字体且列表里名字是 "JetBrainsMono NF";管理员跑仓库 fonts/install-machine.ps1 + 注销重登;字体名已在 MobaXterm.ini 配好 |
 | nvim 里复制到不了 Windows | win32yank 未装;WSL 里重跑仓库 install.sh 即补 |
 | 大 XML(几 MB)无高亮/无补全 | LazyVim bigfile 保护机制,正常现象,不是坏了 |
 | 打开 py/xml 无语法颜色 | parser 未装;`fix-ts` 后 `:TSInstall make xml python` |
