@@ -116,7 +116,7 @@ if grep -qi microsoft /proc/version 2>/dev/null && [ -f fonts/install-machine.ps
     if [ -n "$PS1WIN" ]; then
       echo "  [需要 MobaXterm 的话] 请在弹出的 UAC 窗口点[是]安装机器级字体(用 Windows Terminal 可跳过)"
       powershell.exe -NoProfile -Command "Start-Process powershell -Verb RunAs -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File','$PS1WIN')" || true
-      echo "  机器级安装完成(若点了是),注销重新登录后生效"
+      echo "  机器级安装完成(若点了是),重开终端标签即生效"
     fi
   fi
 fi

@@ -16,4 +16,4 @@ foreach ($f in Get-ChildItem "$src\JetBrainsMonoNerdFont-*.ttf") {
     -Name $regName -Value "$env:WINDIR\Fonts\$($f.Name)" -PropertyType String -Force | Out-Null
   Write-Output ("installed: " + $regName)
 }
-Write-Output 'DONE: 注销重新登录后所有程序可见'
+Write-Output 'DONE: 重开终端软件/新标签即可生效;若未生效注销一次'
